@@ -100,3 +100,12 @@ class Suite:
         if not vals:
             return 0.0
         return round(sum(vals) / len(vals), 4)
+
+    def to_json(self) -> dict:
+        """Stable CI artifact. No timestamps, so diffs stay clean."""
+        return {
+            "suite": self.name,
+            "cases": len(self.rows),
+            "pass_rate": self.pass_rate(),
+            "rows": [r.as_dict() for r in self.rows],
+        }
