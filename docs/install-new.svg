@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="360" viewBox="0 0 920 360">
+  <rect width="920" height="360" rx="16" fill="#0e1210"/>
+  <rect x="16" y="16" width="888" height="328" rx="12" fill="#111614" stroke="#2a322c"/>
+  <circle cx="44" cy="44" r="6" fill="#c45c4a"/>
+  <circle cx="64" cy="44" r="6" fill="#c4a574"/>
+  <circle cx="84" cy="44" r="6" fill="#7d9a6a"/>
+  <text x="40" y="88" fill="#8b9388" font-family="ui-monospace,monospace" font-size="14"># new project</text>
+  <text x="40" y="120" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="14">git clone https://github.com/vk-ai/spanlite.git</text>
+  <text x="40" y="148" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="14">cd spanlite</text>
+  <text x="40" y="176" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="14">python -m venv .venv && source .venv/bin/activate</text>
+  <text x="40" y="204" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="14">pip install -e ".[dev]"</text>
+  <text x="40" y="232" fill="#7d9a6a" font-family="ui-monospace,monospace" font-size="14">pytest          # 6 passed</text>
+  <text x="40" y="260" fill="#7d9a6a" font-family="ui-monospace,monospace" font-size="14">python examples/new_project.py</text>
+  <text x="40" y="300" fill="#c4a574" font-family="ui-monospace,monospace" font-size="13">trace {spans: 1, cost_usd: 0.00084} · eval pass_rate 1.0</text>
+</svg>

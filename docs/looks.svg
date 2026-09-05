@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="420" viewBox="0 0 920 420">
+  <rect width="920" height="420" rx="16" fill="#0e1210"/>
+  <rect x="16" y="16" width="888" height="388" rx="12" fill="#171c19" stroke="#2a322c"/>
+  <text x="40" y="52" fill="#c4a574" font-family="ui-monospace,monospace" font-size="13">spanlite report · suite water-agent</text>
+  <text x="40" y="80" fill="#8b9388" font-family="ui-sans-serif,system-ui" font-size="13">6 cases · pass 83% · 0 vendor calls · 12ms</text>
+  <text x="40" y="124" fill="#8b9388" font-family="ui-monospace,monospace" font-size="12">case                      pass   task  loops  recall</text>
+  <text x="40" y="152" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="13">safer-water               pass   1.0   2      —</text>
+  <text x="40" y="180" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="13">window-3min               pass   1.0   1      —</text>
+  <text x="40" y="208" fill="#c45c4a" font-family="ui-monospace,monospace" font-size="13">tool-spin                 fail   1.0   9      —</text>
+  <text x="40" y="236" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="13">neem-rag                  pass   —     —      1.0</text>
+  <text x="40" y="280" fill="#7d9a6a" font-family="ui-monospace,monospace" font-size="13">trace  spans=4  tokens_in=320  cost_usd=0.0012</text>
+  <text x="40" y="348" fill="#8b9388" font-family="ui-sans-serif,system-ui" font-size="13">Local JSONL. Inject a clock. No LangSmith account.</text>
+</svg>

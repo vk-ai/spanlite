@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="340" viewBox="0 0 920 340">
+  <rect width="920" height="340" rx="16" fill="#0e1210"/>
+  <rect x="16" y="16" width="888" height="308" rx="12" fill="#111614" stroke="#2a322c"/>
+  <text x="40" y="56" fill="#c4a574" font-family="ui-sans-serif,system-ui" font-size="14">Existing project — do not rewrite the agent</text>
+  <text x="40" y="92" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="14">pip install spanlite</text>
+  <text x="40" y="128" fill="#8b9388" font-family="ui-monospace,monospace" font-size="13"># tests/test_retriever.py</text>
+  <text x="40" y="156" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="13">from spanlite import Output, RagCase, RecallJudge, Suite</text>
+  <text x="40" y="184" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="13">suite = Suite("rag", [RecallJudge()])</text>
+  <text x="40" y="212" fill="#e8ebe4" font-family="ui-monospace,monospace" font-size="13">suite.run([RagCase("q", query, gold_ids=("d1",))], my_agent)</text>
+  <text x="40" y="248" fill="#7d9a6a" font-family="ui-monospace,monospace" font-size="13">assert suite.pass_rate() == 1.0</text>
+  <text x="40" y="292" fill="#8b9388" font-family="ui-sans-serif,system-ui" font-size="13">Zero extra services. pytest already installed is enough.</text>
+</svg>
