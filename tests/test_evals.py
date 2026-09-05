@@ -71,3 +71,6 @@ def test_rag_recall_mrr_faith() -> None:
     assert "q1" in table
     html = html_report(suite)
     assert "q1" in html
+    payload = suite.to_json()
+    assert payload["pass_rate"] == 1.0
+    assert payload["rows"][0]["case_id"] == "q1"
