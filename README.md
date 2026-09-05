@@ -62,6 +62,17 @@ suite.run([RagCase("q1", "which tree", gold_ids=("doc-neem",))], my_agent)
 assert suite.pass_rate() == 1.0
 ```
 
+When an eval row fails, the bundled pytest plugin can save the stable JSON
+artifact for CI inspection without writing artifacts for passing suites:
+
+```python
+def test_retriever_quality(suite_artifact, tmp_path):
+    suite = Suite("rag", [RecallJudge()])
+    suite.run([RagCase("q1", "which tree", gold_ids=("doc-neem",))], my_agent)
+    suite_artifact(suite, tmp_path / "rag.json")
+    assert suite.pass_rate() == 1.0
+```
+
 Trace an existing call path the same way:
 
 ```python
