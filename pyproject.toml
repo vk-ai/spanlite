@@ -30,6 +30,9 @@ Issues = "https://github.com/vk-ai/spanlite/issues"
 [project.entry-points.pytest11]
 spanlite = "spanlite.pytest_plugin"
 
+[project.scripts]
+spanlite-promote = "spanlite.promote:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

@@ -86,6 +86,60 @@ with t.span("answer", "llm") as span:
 print(t.summary())
 ```
 
+## Promote failures → CI replay
+
+When a suite row fails in CI or locally, freeze the cases and recorded outputs
+into a **regression pack**, then replay them after you change the agent:
+
+```python
+from pathlib import Path
+from spanlite import (
+    AgentCase,
+    Output,
+    Suite,
+    TaskJudge,
+    assert_no_worse,
+    load_regression,
+    promote,
+    replay,
+)
+
+cases = [AgentCase("capital", "capital of India", expect="Delhi")]
+outputs = {}
+
+def agent(case):
+    out = Output(text="Mumbai")  # buggy
+    outputs[case.id] = out
+    return out
+
+suite = Suite("geo", [TaskJudge()])
+suite.run(cases, agent)
+pack_path = promote(suite, cases, outputs, Path("tests/regressions"))
+
+# Later — same judges, new agent (or frozen replay):
+pack = load_regression(pack_path)
+# Deterministic re-score of the recorded failure:
+replayed = replay(pack, [TaskJudge()])
+assert not replayed.rows[0].passed
+
+# Or run your fixed agent and gate CI:
+fixed = Suite("geo", [TaskJudge()])
+fixed.run(
+    [AgentCase("capital", "capital of India", expect="Delhi")],
+    lambda _c: Output(text="Delhi"),
+)
+assert_no_worse(fixed, pack)
+```
+
+Inspect a pack without Python:
+
+```bash
+python -m spanlite show tests/regressions/geo-capital.json
+python -m spanlite check tests/regressions/geo-capital.json
+```
+
+Packs are stable JSON (`sort_keys`, no timestamps). No new dependencies.
+
 ## What it looks like
 
 `t.summary()`:

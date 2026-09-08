@@ -6,6 +6,14 @@ from spanlite.evals.agent import AgentCase, LoopJudge, TaskJudge
 from spanlite.evals.skill import SkillCase, SchemaJudge, SelectionJudge, RefusalJudge
 from spanlite.evals.rag import RagCase, FaithfulnessJudge, MrrJudge, RecallJudge
 from spanlite.report import html_report, summary_table
+from spanlite.promote import (
+    PromoteError,
+    RegressionPack,
+    assert_no_worse,
+    load_regression,
+    promote,
+    replay,
+)
 
 __all__ = [
     "AgentCase",
@@ -19,9 +27,11 @@ __all__ = [
     "MemorySink",
     "MrrJudge",
     "Output",
+    "PromoteError",
     "RagCase",
     "RecallJudge",
     "RefusalJudge",
+    "RegressionPack",
     "SchemaJudge",
     "Score",
     "SelectionJudge",
@@ -30,7 +40,11 @@ __all__ = [
     "Suite",
     "TaskJudge",
     "Tracer",
+    "assert_no_worse",
     "html_report",
+    "load_regression",
+    "promote",
+    "replay",
     "summary_table",
 ]
 __version__ = "0.1.0"
