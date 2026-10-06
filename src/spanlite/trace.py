@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterator, Mapping, Protocol
 
+from spanlite.redact import Redactor, default_redactor
+
 _PARENT: ContextVar[str | None] = ContextVar("spanlite_parent", default=None)
 
 
@@ -76,10 +78,21 @@ class Span:
         return round((end - self.t0) * 1000, 3)
 
 
+_DEFAULT_REDACTOR: Any = object()
+
+
 class Tracer:
     """Facade over nested spans.
 
     Inject Clock and IdFactory in tests. Never sleeps. Never talks to a vendor.
+
+    Every record is passed through ``redactor`` before any sink sees it. The
+    default redacts high-confidence secrets only (API keys, tokens, JWTs,
+    private keys, values under keys like ``password``); use
+    ``Redactor.with_pii()`` to also mask emails/phones/cards/IPs, or
+    ``redactor=None`` to turn redaction off. If redaction raises, the record
+    is dropped (``dropped_records``), never written raw. In-memory ``spans``
+    keep the original values.
     """
 
     def __init__(
@@ -92,6 +105,7 @@ class Tracer:
         clock: Clock | None = None,
         ids: IdFactory | None = None,
         sinks: list[Sink] | None = None,
+        redactor: Redactor | None = _DEFAULT_REDACTOR,
     ) -> None:
         self.run_id = run_id
         self.model = model
@@ -101,8 +115,19 @@ class Tracer:
         self._ids = ids or UuidFactory()
         self._sinks = sinks or [MemorySink()]
         self.spans: list[Span] = []
+        self.redactor: Redactor | None = (
+            default_redactor() if redactor is _DEFAULT_REDACTOR else redactor
+        )
+        self.dropped_records = 0
 
     def _emit(self, record: Mapping[str, Any]) -> None:
+        if self.redactor is not None:
+            try:
+                record = self.redactor.redact(record)
+            except Exception:
+                # Fail closed: never write a record we could not redact.
+                self.dropped_records += 1
+                return
         for sink in self._sinks:
             sink.emit(record)
 

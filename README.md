@@ -97,6 +97,42 @@ print(t.summary())
 
 `html_report(suite, "report.html")` writes a dark, printable table — pass/fail per case, no login.
 
+## Redaction before disk
+
+Traces and CI artifacts are where pasted API keys and customer emails end up
+living forever. spanlite redacts records **before** any sink or artifact
+writer sees them:
+
+```python
+from spanlite import JsonlSink, Tracer
+from spanlite.redact import Redactor
+
+# Default: high-confidence secrets only (provider API keys, GitHub/Slack/AWS
+# tokens, JWTs, bearer headers, PEM private keys, values under keys like
+# "password" / "authorization").
+t = Tracer("run_01", sinks=[JsonlSink("traces/run.jsonl")])
+
+# Opt in to PII (email, Luhn-checked cards, phone, IPv4) and add your own rule:
+t = Tracer("run_01", sinks=[JsonlSink("traces/run.jsonl")],
+           redactor=Redactor.with_pii().extend(("ticket", r"TCK-\d+")))
+
+# Opt out entirely:
+t = Tracer("run_01", redactor=None)
+```
+
+- Matches become `[REDACTED:<rule>]`. `redactor.counts` shows how many hits each rule had.
+- The `suite_artifact` pytest fixture and `html_report` redact too, and accept
+  the same `redactor=` argument.
+- `RedactingSink(inner, redactor)` wraps any sink you call directly.
+- **Fail closed:** if redaction raises (for example a `custom=` detector is
+  down), the record is dropped and counted in `tracer.dropped_records`. It is
+  never written raw.
+- PII is opt-in because those patterns can match ordinary data such as ids,
+  numbers and versions. Secret patterns are specific enough to stay on by
+  default. Regex redaction is defense in depth, not a guarantee.
+- In-memory `tracer.spans` keep raw values for assertions in tests. Only what
+  is emitted gets redacted.
+
 ## Usefulness
 
 You can fail a pull request when:

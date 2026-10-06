@@ -4,6 +4,9 @@ from html import escape
 from pathlib import Path
 
 from spanlite.evals.base import Suite
+from spanlite.redact import Redactor, default_redactor
+
+_DEFAULT: object = object()
 
 
 def summary_table(suite: Suite) -> str:
@@ -19,19 +22,28 @@ def summary_table(suite: Suite) -> str:
     return "\n".join(lines)
 
 
-def html_report(suite: Suite, path: str | Path | None = None) -> str:
+def html_report(
+    suite: Suite,
+    path: str | Path | None = None,
+    *,
+    redactor: Redactor | None | object = _DEFAULT,
+) -> str:
+    """Render a static HTML report. Case ids and score names are redacted
+    (secrets by default; ``redactor=None`` to disable)."""
+    active = default_redactor() if redactor is _DEFAULT else redactor
+    clean = active.text if isinstance(active, Redactor) else (lambda s: s)
     rows = []
     for row in suite.rows:
         cells = "".join(
-            f"<td class='{'ok' if s.passed else 'bad'}'>{escape(s.name)} {s.value}</td>"
+            f"<td class='{'ok' if s.passed else 'bad'}'>{escape(clean(s.name))} {s.value}</td>"
             for s in row.scores
         )
         rows.append(
-            f"<tr class='{'ok' if row.passed else 'bad'}'><td>{escape(row.case_id)}</td>"
+            f"<tr class='{'ok' if row.passed else 'bad'}'><td>{escape(clean(row.case_id))}</td>"
             f"<td>{'pass' if row.passed else 'fail'}</td>{cells}</tr>"
         )
     html = f"""<!doctype html>
-<html><head><meta charset=\"utf-8\"><title>{escape(suite.name)}</title>
+<html><head><meta charset=\"utf-8\"><title>{escape(clean(suite.name))}</title>
 <style>
 body{{font:14px/1.45 ui-sans-serif,system-ui;background:#0e1210;color:#e8ebe4;margin:32px}}
 h1{{font-weight:500}} table{{border-collapse:collapse;width:100%}}
@@ -40,7 +52,7 @@ td,th{{border-bottom:1px solid #2a322c;padding:8px 10px;text-align:left}}
 .meta{{color:#8b9388}}
 </style></head>
 <body>
-<h1>{escape(suite.name)}</h1>
+<h1>{escape(clean(suite.name))}</h1>
 <p class=\"meta\">{len(suite.rows)} cases · pass {suite.pass_rate():.0%}</p>
 <table><thead><tr><th>case</th><th>result</th><th colspan=\"8\">scores</th></tr></thead>
 <tbody>{''.join(rows)}</tbody></table>
